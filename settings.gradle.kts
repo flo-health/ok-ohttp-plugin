@@ -22,7 +22,7 @@ dependencyResolutionManagement {
             version("mockitoKotlin", "4.1.0")
 
             // https://github.com/square/okhttp/blob/master/CHANGELOG.md
-            version("okhttp", "4.10.0")
+            version("okhttp", "5.3.2")
 
             version("ohttp-encapsulator-android", "0.2.0")
             version("bhttp", "0.1.0")
