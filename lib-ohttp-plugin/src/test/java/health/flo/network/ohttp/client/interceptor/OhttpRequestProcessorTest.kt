@@ -20,7 +20,6 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.TlsVersion.TLS_1_3
-import okhttp3.internal.toHostHeader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

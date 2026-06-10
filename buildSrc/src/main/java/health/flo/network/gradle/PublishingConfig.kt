@@ -1,6 +1,6 @@
 package health.flo.network.gradle
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
@@ -62,7 +62,7 @@ fun Project.setupPublishingRepositories(publishing: PublishingExtension) {
             //  ./gradlew publishReleasePublicationToMvnBuildDirRepository to publish to <module>/build/repo
             maven {
                 name = "MvnBuildDir"
-                url = uri("${project.buildDir}/repo")
+                url = layout.buildDirectory.dir("repo").get().asFile.toURI()
             }
         }
     }

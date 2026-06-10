@@ -1,15 +1,15 @@
+import com.android.build.api.dsl.LibraryExtension
 import health.flo.network.gradle.Environment
 import health.flo.network.gradle.configureCompiler
 import health.flo.network.gradle.configureSdk
 
 plugins {
     id("com.android.library")
-    kotlin("android")
 }
 
-android {
+extensions.configure<LibraryExtension>("android") {
     configureSdk()
-    configureCompiler(tasks, kotlinOptions)
+    configureCompiler(project.tasks)
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -19,12 +19,12 @@ android {
     }
 
     buildFeatures {
-        aidl = false
-        renderScript = false
         shaders = false
     }
+}
 
-    kotlinOptions {
+kotlin {
+    compilerOptions {
         allWarningsAsErrors = Environment.isCI
     }
 }

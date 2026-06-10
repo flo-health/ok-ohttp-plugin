@@ -39,9 +39,6 @@ internal class OhttpRelayCallUnpacker(
 ) {
 
     fun unwrapFromOhttp(response: Response): Response {
-        val responseBody = response.body
-            ?: throw IOException("Empty OHTTP response body")
-
         val headers = response.headers(CONTENT_TYPE_HEADER)
         val isOhttpResponse = headers.contains(OHTTP_RESPONSE_CONTENT_TYPE_HEADER_VALUE)
 
@@ -51,7 +48,7 @@ internal class OhttpRelayCallUnpacker(
 
         val encryptedResponse = OhttpEncryptedResponse(
             protocol = response.protocol,
-            data = responseBody.bytes(),
+            data = response.body.bytes(),
         )
 
         return decryptor.decrypt(encryptedResponse)

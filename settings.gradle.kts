@@ -5,16 +5,16 @@ dependencyResolutionManagement {
             version("assertj", "3.24.2")
             // https://developer.android.com/studio/releases/gradle-plugin
             // Please update Lint version whenever you update Android Gradle plugin
-            version("androidGradlePlugin", "7.4.2")
+            version("androidGradlePlugin", "9.1.1")
 
             // https://github.com/mannodermaus/android-junit5/releases
-            version("androidJunit5", "1.9.3.0")
+            version("androidJunit5", "1.14.0.0")
 
             // https://junit.org/junit5/docs/snapshot/release-notes/
             version("junit5", "5.9.2")
 
             // https://kotlinlang.org/docs/releases.html#release-details
-            version("kotlin", "1.8.21")
+            version("kotlin", "2.3.0")
 
             // https://github.com/mockito/mockito/releases
             version("mockito", "4.11.0")
@@ -22,7 +22,7 @@ dependencyResolutionManagement {
             version("mockitoKotlin", "4.1.0")
 
             // https://github.com/square/okhttp/blob/master/CHANGELOG.md
-            version("okhttp", "4.12.0")
+            version("okhttp", "5.3.2")
 
             version("ohttp-encapsulator-android", "0.2.0")
             version("bhttp", "0.1.0")
@@ -63,7 +63,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    id("com.gradle.enterprise").version("3.12.3")
+    id("com.gradle.enterprise").version("3.13.1")
 }
 
 include(

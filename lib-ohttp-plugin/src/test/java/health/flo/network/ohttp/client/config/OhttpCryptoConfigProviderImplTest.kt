@@ -45,15 +45,6 @@ internal class OhttpCryptoConfigProviderImplTest {
     )
 
     @Test
-    fun `getConfig should throw IOException when crypto config request received with empty body`() {
-        okhttpClientResponse.stub { on { this.body } doReturn null }
-
-        assertThrows<IOException> {
-            sut.getConfig()
-        }
-    }
-
-    @Test
     fun `getConfig should throw IOException when crypto config request was unsuccessful`() {
         okhttpClientResponse.stub { on { this.isSuccessful } doReturn false }
 

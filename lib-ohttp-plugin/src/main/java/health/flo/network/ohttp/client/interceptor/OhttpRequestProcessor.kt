@@ -15,7 +15,6 @@ import health.flo.network.ohttp.client.relay.OhttpRelayCallUnpacker
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.internal.toHostHeader
 import java.net.HttpURLConnection.HTTP_OK
 import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 

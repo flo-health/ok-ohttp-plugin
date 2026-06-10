@@ -9,7 +9,6 @@ import health.flo.network.ohttp.client.utils.UrlEncoder
 import health.flo.test.extensions.toDynamicTests
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
-import okhttp3.internal.toHostHeader
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
