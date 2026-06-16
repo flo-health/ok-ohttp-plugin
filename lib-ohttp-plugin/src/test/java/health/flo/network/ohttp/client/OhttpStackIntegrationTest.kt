@@ -14,6 +14,7 @@ import health.flo.network.ohttp.client.HttpHeaders.HOST_HEADER
 import health.flo.network.ohttp.client.HttpHeaders.OHTTP_REQUEST_CONTENT_TYPE_HEADER_VALUE
 import health.flo.network.ohttp.client.HttpHeaders.OHTTP_RESPONSE_CONTENT_TYPE_HEADER_VALUE
 import health.flo.network.ohttp.client.HttpHeaders.USER_AGENT_HEADER
+import health.flo.network.ohttp.client.interceptor.toHostHeader
 import health.flo.network.ohttp.client.utils.UrlEncoder
 import health.flo.network.ohttp.encapsulator.DecapsulationResult
 import health.flo.network.ohttp.encapsulator.EncapsulationResult
@@ -27,9 +28,6 @@ import okhttp3.Protocol
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import okhttp3.internal.http2.Header
-import okhttp3.internal.toHeaderList
-import okhttp3.internal.toHostHeader
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
@@ -132,7 +130,7 @@ internal class OhttpStackIntegrationTest {
         val recordedRequest: RecordedRequest = targetServer.takeRequestWithTimeout()
 
         assertThat(recordedRequest.headers.sorted())
-            .contains(Header(MARKER_HEADER, USER_CONTENT_MARKER))
+            .contains("$MARKER_HEADER: $USER_CONTENT_MARKER")
     }
 
     @Test
@@ -157,7 +155,7 @@ internal class OhttpStackIntegrationTest {
         relayServer.enqueue(stubValidRelayResponse())
 
         val response = sut.newCall(request).execute()
-        val responseBodyBytes = response.body!!.bytes()
+        val responseBodyBytes = response.body.bytes()
         val recordedRequest: RecordedRequest = relayServer.takeRequestWithTimeout()
 
         verify(okHttpBinarySerializer).serialize(
@@ -633,7 +631,7 @@ internal class OhttpStackIntegrationTest {
 }
 
 private fun Response.alsoReadBodyToTriggerResponseCaching(): Response {
-    this.body!!.bytes()
+    this.body.bytes()
     return this
 }
 
@@ -643,8 +641,10 @@ private fun stubValidRelayResponse(): MockResponse {
         .setBody("body with OHTTP-encrypted response from target server")
 }
 
-private fun Headers.sorted(): List<Header> {
-    return this.toHeaderList().sortedBy(Header::toString)
+private fun Headers.sorted(): List<String> {
+    return (0 until size)
+        .map { index -> "${name(index)}: ${value(index)}" }
+        .sorted()
 }
 
 private fun MockWebServer.takeRequestWithTimeout(): RecordedRequest {

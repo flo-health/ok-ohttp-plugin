@@ -11,7 +11,7 @@ data class SdkConfig(
 private val defaultSdkConfig = SdkConfig(
     minSdk = 26,
     targetSdk = 31,
-    compileSdk = 33,
+    compileSdk = 37,
 )
 
 fun LibraryExtension.configureSdk(sdkConfig: SdkConfig = defaultSdkConfig) {

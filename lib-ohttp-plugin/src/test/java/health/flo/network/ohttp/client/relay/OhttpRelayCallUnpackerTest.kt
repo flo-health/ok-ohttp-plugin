@@ -61,17 +61,6 @@ internal class OhttpRelayCallUnpackerTest {
     }
 
     @Test
-    fun `unwrapFromOhttp should throw IOException when response body is null`() {
-        responseWithEncryptedBody.stub {
-            on { this.body } doReturn null
-        }
-
-        assertThrows<IOException> {
-            sut.unwrapFromOhttp(responseWithEncryptedBody)
-        }
-    }
-
-    @Test
     fun `unwrapFromOhttp should throw IOException when response has wrong Content-Type`() {
         responseWithEncryptedBody.stub {
             on { this.headers(CONTENT_TYPE_HEADER) } doReturn listOf("WRONG Content-Type")

@@ -7,6 +7,7 @@ import okhttp3.Request
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 internal interface OhttpCryptoConfigProvider {
@@ -60,6 +61,7 @@ internal class OhttpCryptoConfigProviderImpl constructor(
         }
     }
 
+    @OptIn(ExperimentalContracts::class)
     private fun isFreshConfig(
         candidate: OhttpCryptoConfig?,
         stale: OhttpCryptoConfig?,
@@ -94,10 +96,7 @@ internal class OhttpCryptoConfigProviderImpl constructor(
             .execute()
 
         return if (response.isSuccessful) {
-            val responseBody = response.body
-                ?: throw IOException("Empty OHTTP crypto config received!")
-
-            OhttpCryptoConfig(responseBody.bytes())
+            OhttpCryptoConfig(response.body.bytes())
         } else {
             throw IOException("OHTTP crypto config request failed!")
         }

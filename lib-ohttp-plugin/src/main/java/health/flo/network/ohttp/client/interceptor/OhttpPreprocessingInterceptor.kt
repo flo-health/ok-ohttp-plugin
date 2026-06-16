@@ -37,7 +37,7 @@ internal class OhttpPreprocessingInterceptor internal constructor(
                     if (staleConfigHash != null) {
                         val recoverRequest = addRefreshConfigHeader(relayRequest, staleConfigHash)
 
-                        chainResponse.body?.close()
+                        chainResponse.body.close()
                         chain.proceed(recoverRequest)
                     } else {
                         chainResponse

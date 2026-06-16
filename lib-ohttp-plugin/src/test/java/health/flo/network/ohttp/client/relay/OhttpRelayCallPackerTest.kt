@@ -85,19 +85,6 @@ internal class OhttpRelayCallPackerTest {
     }
 
     @Test
-    fun `unwrapFromOhttp should throw IOException when response body is empty`() {
-        val response = stubResponse.newBuilder()
-            .addHeader(CONTENT_TYPE_HEADER, OHTTP_RESPONSE_CONTENT_TYPE_HEADER_VALUE)
-            .build()
-
-        val (_, unpacker) = sut.wrapToOhttp(request, cryptoConfig)
-
-        assertThrows<IOException> {
-            unpacker.unwrapFromOhttp(response)
-        }
-    }
-
-    @Test
     fun `unwrapFromOhttp should throw IOException when proper Content-Type header is not found`() {
         val response = stubResponse.newBuilder()
             .body("Encrypted Response Body".toResponseBody())
