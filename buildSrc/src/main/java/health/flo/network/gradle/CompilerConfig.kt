@@ -13,7 +13,7 @@ data class CompilerConfig(
 )
 
 private val defaultSdkConfig = CompilerConfig(
-    javaVersion = JavaVersion.VERSION_1_8,
+    javaVersion = JavaVersion.VERSION_17,
 )
 
 fun CommonExtension.configureCompiler(

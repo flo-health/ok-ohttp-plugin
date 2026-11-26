@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.LibraryExtension
 import health.flo.network.gradle.Environment
 import health.flo.network.gradle.configureCompiler
 import health.flo.network.gradle.configureSdk
@@ -7,7 +6,7 @@ plugins {
     id("com.android.library")
 }
 
-extensions.configure<LibraryExtension>("android") {
+android {
     configureSdk()
     configureCompiler(project.tasks)
 

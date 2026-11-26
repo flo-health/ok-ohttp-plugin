@@ -13,10 +13,8 @@ plugins {
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.contracts.ExperimentalContracts")
-        }
+    compilerOptions {
+        optIn.add("kotlin.contracts.ExperimentalContracts")
     }
 }
 
