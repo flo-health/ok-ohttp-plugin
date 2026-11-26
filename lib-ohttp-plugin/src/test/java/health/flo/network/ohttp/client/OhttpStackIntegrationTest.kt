@@ -69,6 +69,9 @@ private const val E_TAG_HEADER_VALUE = "W/\"29e66de07b12a3c93c92433dde1b910b\""
 private const val USER_AGENT_CONFIG = "Test ConfigServer User Agent"
 private const val USER_AGENT_RELAY = "Test Relay User Agent"
 
+private const val NON_ASCII_HEADER = "x-synthetic"
+private const val NON_ASCII_HEADER_VALUE = "café"
+
 internal class OhttpStackIntegrationTest {
 
     private val okhttpClientTimeout = Duration.ofSeconds(1)
@@ -585,6 +588,43 @@ internal class OhttpStackIntegrationTest {
         }
     }
 
+    @Test
+    fun `request should be encapsulated with a non-ASCII header value encoded as UTF-8`() {
+        val headers = request.headers.newBuilder()
+            .addUnsafeNonAscii(NON_ASCII_HEADER, NON_ASCII_HEADER_VALUE)
+            .build()
+        val request = request.newBuilder()
+            .headers(headers)
+            .build()
+        ohttpDecapsulator.stub {
+            on { this.decapsulateResponse(any()) } doReturn DecapsulationResult.Success(bhttpResponseWithNonAsciiHeader())
+        }
+
+        relayConfigServer.enqueue(relayConfigServerResponse)
+        relayServer.enqueue(stubValidRelayResponse())
+
+        createSut(binarySerializer = OkHttpBinarySerializer.create()).newCall(request).execute()
+
+        verify(ohttpEncapsulator).encapsulateRequest(
+            argWhere { plainRequest -> plainRequest.toString(Charsets.UTF_8).contains(NON_ASCII_HEADER_VALUE) },
+            any(),
+        )
+    }
+
+    @Test
+    fun `response should have a non-ASCII header value decoded as UTF-8`() {
+        ohttpDecapsulator.stub {
+            on { this.decapsulateResponse(any()) } doReturn DecapsulationResult.Success(bhttpResponseWithNonAsciiHeader())
+        }
+
+        relayConfigServer.enqueue(relayConfigServerResponse)
+        relayServer.enqueue(stubValidRelayResponse())
+
+        val response = createSut(binarySerializer = OkHttpBinarySerializer.create()).newCall(request).execute()
+
+        assertThat(response.header(NON_ASCII_HEADER)).isEqualTo(NON_ASCII_HEADER_VALUE)
+    }
+
     @AfterEach
     fun afterEachTest() {
         targetServer.shutdown()
@@ -595,6 +635,7 @@ internal class OhttpStackIntegrationTest {
     private fun createSut(
         cacheForConfigRequests: Cache? = null,
         cacheForRelayRequests: Cache? = null,
+        binarySerializer: OkHttpBinarySerializer = okHttpBinarySerializer,
     ): OkHttpClient {
         val ohttpConfig = OhttpConfig(
             relayUrl = relayUrl,
@@ -617,7 +658,7 @@ internal class OhttpStackIntegrationTest {
                 isOhttpEnabled = isOhttpEnabled,
             ) {
                 urlEncoder(urlEncoder)
-                okHttpBinarySerializer(okHttpBinarySerializer)
+                okHttpBinarySerializer(binarySerializer)
                 ohttpEncapsulator(ohttpEncapsulator)
             }
     }
@@ -633,6 +674,18 @@ internal class OhttpStackIntegrationTest {
 private fun Response.alsoReadBodyToTriggerResponseCaching(): Response {
     this.body.bytes()
     return this
+}
+
+// A known-length BHTTP response (RFC 9292): status 200, one header, no content, no trailers.
+private fun bhttpResponseWithNonAsciiHeader(): ByteArray {
+    val name = NON_ASCII_HEADER.toByteArray(Charsets.UTF_8)
+    val value = NON_ASCII_HEADER_VALUE.toByteArray(Charsets.UTF_8)
+    val fieldLine = byteArrayOf(name.size.toByte()) + name + byteArrayOf(value.size.toByte()) + value
+    val framingIndicator = byteArrayOf(1)
+    val status = byteArrayOf(0x40, 0xC8.toByte())
+    val emptyContentAndTrailers = byteArrayOf(0, 0)
+
+    return framingIndicator + status + byteArrayOf(fieldLine.size.toByte()) + fieldLine + emptyContentAndTrailers
 }
 
 private fun stubValidRelayResponse(): MockResponse {

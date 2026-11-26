@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             version("okhttp", "5.5.1")
 
             version("ohttp-encapsulator-android", "0.3.0")
-            version("bhttp", "0.1.0")
+            version("bhttp", "0.2.0")
 
             library("androidGradlePlugin", "com.android.tools.build", "gradle").versionRef("androidGradlePlugin")
             library("androidJunit5", "de.mannodermaus.gradle.plugins", "android-junit5").versionRef("androidJunit5")
