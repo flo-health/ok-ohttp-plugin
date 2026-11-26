@@ -13,10 +13,8 @@ plugins {
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.contracts.ExperimentalContracts")
-        }
+    compilerOptions {
+        optIn.add("kotlin.contracts.ExperimentalContracts")
     }
 }
 
@@ -39,7 +37,7 @@ publishing {
         publishing = this,
         config = PublishingConfig(
             artifactId = "ok-ohttp-plugin-android",
-            version = "0.3.0",
+            version = "0.4.0",
         ),
     )
     setupPublishingRepositories(publishing = this)
